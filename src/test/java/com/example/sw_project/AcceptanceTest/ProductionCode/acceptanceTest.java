@@ -1,4 +1,4 @@
-package com.example.sw_project.AcceptanceTest;
+package com.example.sw_project.AcceptanceTest.ProductionCode;
 import org.junit.runner.RunWith;
 import io.cucumber.junit.Cucumber;
 import io.cucumber.junit.CucumberOptions;

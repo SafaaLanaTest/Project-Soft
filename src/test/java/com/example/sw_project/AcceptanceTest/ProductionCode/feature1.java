@@ -1,12 +1,12 @@
-package com.example.sw_project.AcceptanceTest;
+package com.example.sw_project.AcceptanceTest.ProductionCode;
 
 import io.cucumber.datatable.DataTable;
 import java.util.Map;
-import static org.junit.Assert.*;
+import org.junit.Assert;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.When;
 import io.cucumber.java.en.Then;
-import com.example.sw_project.AcceptanceTest.Client;
+import com.example.sw_project.Client;
 
 public class feature1 {
 
@@ -39,10 +39,10 @@ public class feature1 {
     @Then("the profile should include the following dietary data:")
     public void the_profile_should_include_the_following_dietary_data(DataTable dataTable) {
         Map<String, String> expected = dataTable.asMap(String.class, String.class);
-        assertEquals(expected.get("Vegan"), client.getDietaryPreference("Vegan") ? "Yes" : "No");
-        assertEquals(expected.get("Gluten-Free"), client.getDietaryPreference("Gluten-Free") ? "Yes" : "No");
-        assertEquals(expected.get("Low-Carb"), client.getDietaryPreference("Low-Carb") ? "Yes" : "No");
-        assertEquals(expected.get("Allergies"), client.getAllergies());
+        Assert.assertEquals(expected.get("Vegan"), client.getDietaryPreference("Vegan") ? "Yes" : "No");
+        Assert.assertEquals(expected.get("Gluten-Free"), client.getDietaryPreference("Gluten-Free") ? "Yes" : "No");
+        Assert.assertEquals(expected.get("Low-Carb"), client.getDietaryPreference("Low-Carb") ? "Yes" : "No");
+        Assert.assertEquals(expected.get("Allergies"), client.getAllergies());
         System.out.println("Dietary data verified: " + expected);
     }
 
@@ -63,10 +63,10 @@ public class feature1 {
     @Then("the following dietary data should be visible:")
     public void the_following_dietary_data_should_be_visible(DataTable dataTable) {
         Map<String, String> expected = dataTable.asMap(String.class, String.class);
-        assertEquals(expected.get("Vegan"), client.getDietaryPreference("Vegan") ? "Yes" : "No");
-        assertEquals(expected.get("Gluten-Free"), client.getDietaryPreference("Gluten-Free") ? "Yes" : "No");
-        assertEquals(expected.get("Low-Carb"), client.getDietaryPreference("Low-Carb") ? "Yes" : "No");
-        assertEquals(expected.get("Allergies"), client.getAllergies());
+        Assert.assertEquals(expected.get("Vegan"), client.getDietaryPreference("Vegan") ? "Yes" : "No");
+        Assert.assertEquals(expected.get("Gluten-Free"), client.getDietaryPreference("Gluten-Free") ? "Yes" : "No");
+        Assert.assertEquals(expected.get("Low-Carb"), client.getDietaryPreference("Low-Carb") ? "Yes" : "No");
+        Assert.assertEquals(expected.get("Allergies"), client.getAllergies());
         System.out.println("Chef confirmed dietary data: " + expected);
     }
 
@@ -94,10 +94,10 @@ public class feature1 {
 
     @Then("the profile should indicate that no dietary preferences or allergies are specified")
     public void the_profile_should_indicate_that_no_dietary_preferences_or_allergies_are_specified() {
-        assertFalse(client.getDietaryPreference("Vegan"));
-        assertFalse(client.getDietaryPreference("Gluten-Free"));
-        assertFalse(client.getDietaryPreference("Low-Carb"));
-        assertTrue(client.getAllergies() == null || client.getAllergies().isEmpty());
+        Assert.assertFalse(client.getDietaryPreference("Vegan"));
+        Assert.assertFalse(client.getDietaryPreference("Gluten-Free"));
+        Assert.assertFalse(client.getDietaryPreference("Low-Carb"));
+        Assert.assertTrue(client.getAllergies() == null || client.getAllergies().isEmpty());
         System.out.println("Verified that profile has no dietary preferences or allergies.");
     }
 }

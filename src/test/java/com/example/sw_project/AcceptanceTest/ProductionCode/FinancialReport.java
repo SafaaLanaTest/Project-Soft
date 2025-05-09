@@ -1,31 +1,27 @@
-package com.example.sw_project.AcceptanceTest;
+package com.example.sw_project.AcceptanceTest.ProductionCode;
 
+import com.example.sw_project.FinancialReportGenerator;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.*;
 import org.junit.Assert;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 
 public class FinancialReport {
 
-    private final List<Double> dailyOrderTotals = new ArrayList<>();
-    private final List<Double> monthlyOrderTotals = new ArrayList<>();
-    private double dailyRevenue = 0.0;
-    private double monthlyRevenue = 0.0;
+    private final FinancialReportGenerator report = new FinancialReportGenerator();
 
     // ==== DAILY REPORT ====
 
     @Given("the system has recorded the following orders today:")
     public void the_system_has_recorded_the_following_orders_today(DataTable dataTable) {
-        dailyOrderTotals.clear();
-        dailyRevenue = 0.0;
-
+        report.reset(); // لضمان عدم تراكم البيانات من سيناريوهات سابقة
         for (Map<String, String> row : dataTable.asMaps()) {
             String amountStr = row.get("Total Amount");
             if (amountStr != null) {
                 double total = Double.parseDouble(amountStr.trim());
-                dailyOrderTotals.add(total);
-                dailyRevenue += total;
+                report.recordDailyOrder(total);
             } else {
                 throw new IllegalArgumentException("Missing 'Total Amount' in data row: " + row);
             }
@@ -34,7 +30,7 @@ public class FinancialReport {
 
     @When("the system generates the financial report for today")
     public void the_system_generates_the_financial_report_for_today() {
-        // الحسابات تمت في Given
+        // الحسابات تتم داخل الكلاس المالي
     }
 
     @Then("the report should show:")
@@ -44,23 +40,20 @@ public class FinancialReport {
         double expectedRevenue = Double.parseDouble(expected.get("Total Revenue").trim());
         int expectedOrders = Integer.parseInt(expected.get("Number of Orders").trim());
 
-        Assert.assertEquals("Daily total revenue mismatch", expectedRevenue, dailyRevenue, 0.01);
-        Assert.assertEquals("Daily number of orders mismatch", expectedOrders, dailyOrderTotals.size());
+        Assert.assertEquals("Daily total revenue mismatch", expectedRevenue, report.getDailyRevenue(), 0.01);
+        Assert.assertEquals("Daily number of orders mismatch", expectedOrders, report.getDailyOrderCount());
     }
 
     // ==== MONTHLY REPORT ====
 
     @Given("the system has recorded the following monthly orders:")
     public void the_system_has_recorded_the_following_monthly_orders(DataTable dataTable) {
-        monthlyOrderTotals.clear();
-        monthlyRevenue = 0.0;
-
+        report.reset(); // إعادة التهيئة لتقارير منفصلة
         for (Map<String, String> row : dataTable.asMaps()) {
             String amountStr = row.get("Total Amount");
             if (amountStr != null) {
                 double total = Double.parseDouble(amountStr.trim());
-                monthlyOrderTotals.add(total);
-                monthlyRevenue += total;
+                report.recordMonthlyOrder(total);
             } else {
                 throw new IllegalArgumentException("Missing 'Total Amount' in data row: " + row);
             }
@@ -69,7 +62,7 @@ public class FinancialReport {
 
     @When("the system generates the financial report for the month")
     public void the_system_generates_the_financial_report_for_the_month() {
-        // الحسابات تمت في Given
+        // الحساب يتم تلقائيًا داخل الكلاس
     }
 
     @Then("the monthly report should show:")
@@ -79,7 +72,7 @@ public class FinancialReport {
         double expectedRevenue = Double.parseDouble(expected.get("Total Revenue").trim());
         int expectedOrders = Integer.parseInt(expected.get("Number of Orders").trim());
 
-        Assert.assertEquals("Monthly total revenue mismatch", expectedRevenue, monthlyRevenue, 0.01);
-        Assert.assertEquals("Monthly number of orders mismatch", expectedOrders, monthlyOrderTotals.size());
+        Assert.assertEquals("Monthly total revenue mismatch", expectedRevenue, report.getMonthlyRevenue(), 0.01);
+        Assert.assertEquals("Monthly number of orders mismatch", expectedOrders, report.getMonthlyOrderCount());
     }
 }

@@ -1,5 +1,6 @@
-package com.example.sw_project.AcceptanceTest;
+package com.example.sw_project.AcceptanceTest.ProductionCode;
 
+import com.example.sw_project.InventoryManager;
 import io.cucumber.java.en.*;
 import io.cucumber.datatable.DataTable;
 
@@ -9,34 +10,28 @@ import static org.junit.Assert.*;
 
 public class InventoryTracking {
 
-    private Map<String, Integer> stockLevels = new HashMap<>();
-    private int restockingThreshold;
+    private final InventoryManager inventoryManager = new InventoryManager();
     private List<String> suggestedRestock = new ArrayList<>();
 
     @Given("the following ingredients and their stock levels:")
     public void the_following_ingredients_and_their_stock_levels(DataTable dataTable) {
-        stockLevels.clear();
+        inventoryManager.clearInventory();
         List<Map<String, String>> rows = dataTable.asMaps(String.class, String.class);
         for (Map<String, String> row : rows) {
             String ingredient = row.get("Ingredient");
             int quantity = Integer.parseInt(row.get("Quantity"));
-            stockLevels.put(ingredient, quantity);
+            inventoryManager.setStockLevel(ingredient, quantity);
         }
     }
 
     @Given("the restocking threshold is set to {int} units")
     public void the_restocking_threshold_is_set_to_units(Integer threshold) {
-        this.restockingThreshold = threshold;
+        inventoryManager.setRestockingThreshold(threshold);
     }
 
     @When("the system checks the inventory")
     public void the_system_checks_the_inventory() {
-        suggestedRestock.clear();
-        for (Map.Entry<String, Integer> entry : stockLevels.entrySet()) {
-            if (entry.getValue() <= restockingThreshold) { // تم التعديل هنا
-                suggestedRestock.add(entry.getKey());
-            }
-        }
+        suggestedRestock = inventoryManager.checkInventoryForRestocking();
     }
 
     @Then("the system should suggest restocking for:")
@@ -50,7 +45,7 @@ public class InventoryTracking {
         List<String> actual = new ArrayList<>(suggestedRestock);
         Collections.sort(actual);
 
-        assertEquals("Restocking suggestions do not match. ", expected, actual);
+        assertEquals("Restocking suggestions do not match.", expected, actual);
     }
 
     @Then("the system should not suggest any restocking")

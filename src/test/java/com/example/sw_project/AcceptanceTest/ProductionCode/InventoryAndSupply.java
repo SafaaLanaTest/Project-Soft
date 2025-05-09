@@ -1,17 +1,16 @@
-package com.example.sw_project.AcceptanceTest;
+package com.example.sw_project.AcceptanceTest.ProductionCode;
 
+import com.example.sw_project.SupplyManager;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.*;
+import org.junit.Assert;
 
 import java.util.*;
 
-import static org.junit.Assert.*;
-
 public class InventoryAndSupply {
 
-    private Map<String, Double> supplierPrices = new HashMap<>();
-    private Map<String, Integer> currentStock = new HashMap<>();
-    private int criticalThreshold;
+    private final SupplyManager manager = new SupplyManager();
+    private Map<String, Double> fetchedPrices = new HashMap<>();
     private List<String> purchaseOrderItems = new ArrayList<>();
 
     @Given("the supplier API is available")
@@ -21,53 +20,47 @@ public class InventoryAndSupply {
 
     @Given("the following ingredients need pricing:")
     public void the_following_ingredients_need_pricing(DataTable dataTable) {
-        supplierPrices.clear();
+        manager.clear();
         List<Map<String, String>> rows = dataTable.asMaps(String.class, String.class);
         for (Map<String, String> row : rows) {
             String ingredient = row.get("Ingredient");
-            double price = Double.parseDouble(row.get("Price")); // السعر قادم من جدول الفيتشر
-            supplierPrices.put(ingredient, price);
+            double price = Double.parseDouble(row.get("Price"));
+            manager.setSupplierPrice(ingredient, price);
         }
     }
 
     @When("the system fetches current prices")
     public void the_system_fetches_current_prices() {
-        // المحاكاة تمت بالفعل في @Given
-        System.out.println("Fetched prices from supplier API.");
+        fetchedPrices = manager.fetchCurrentPrices();
     }
 
     @Then("the system should display the following prices:")
     public void the_system_should_display_the_following_prices(DataTable dataTable) {
         Map<String, Double> expectedPrices = new HashMap<>();
-        List<Map<String, String>> rows = dataTable.asMaps(String.class, String.class);
-        for (Map<String, String> row : rows) {
+        for (Map<String, String> row : dataTable.asMaps(String.class, String.class)) {
             expectedPrices.put(row.get("Ingredient"), Double.parseDouble(row.get("Price")));
         }
-        assertEquals("Prices do not match expected values", expectedPrices, supplierPrices);
+        Assert.assertEquals("Prices do not match expected values", expectedPrices, fetchedPrices);
     }
 
     @Given("the current stock levels are:")
     public void the_current_stock_levels_are(DataTable dataTable) {
-        currentStock.clear();
-        List<Map<String, String>> rows = dataTable.asMaps(String.class, String.class);
-        for (Map<String, String> row : rows) {
-            currentStock.put(row.get("Ingredient"), Integer.parseInt(row.get("Quantity")));
+        manager.clear();
+        for (Map<String, String> row : dataTable.asMaps(String.class, String.class)) {
+            String ingredient = row.get("Ingredient");
+            int quantity = Integer.parseInt(row.get("Quantity"));
+            manager.setStockLevel(ingredient, quantity);
         }
     }
 
     @Given("the critical threshold is set to {int} units")
     public void the_critical_threshold_is_set_to_units(Integer threshold) {
-        this.criticalThreshold = threshold;
+        manager.setCriticalThreshold(threshold);
     }
 
     @When("the system reviews inventory")
     public void the_system_reviews_inventory() {
-        purchaseOrderItems.clear();
-        for (Map.Entry<String, Integer> entry : currentStock.entrySet()) {
-            if (entry.getValue() < criticalThreshold) {
-                purchaseOrderItems.add(entry.getKey());
-            }
-        }
+        purchaseOrderItems = manager.generatePurchaseOrder();
     }
 
     @Then("the system should generate a purchase order for:")
@@ -76,6 +69,6 @@ public class InventoryAndSupply {
                 .stream()
                 .map(row -> row.get("Ingredient"))
                 .toList();
-        assertEquals("Purchase order items do not match", expected, purchaseOrderItems);
+        Assert.assertEquals("Purchase order items do not match", expected, purchaseOrderItems);
     }
 }
