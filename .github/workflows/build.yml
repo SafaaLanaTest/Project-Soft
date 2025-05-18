@@ -1,4 +1,5 @@
 name: SonarQube
+
 on:
   push:
     branches:
@@ -10,8 +11,10 @@ jobs:
   build:
     name: Build and analyze
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
@@ -35,8 +38,8 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
 
-      - name: Build and analyze with Sonar
-        working-directory: ./  # <- تأكد أنك داخل المجلد الصحيح اللي فيه pom.xml
+      - name: Build and analyze with SonarCloud
+        working-directory: ../  # نرجع مجلد للخلف حيث يوجد pom.xml
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: mvn -B jacoco:prepare-agent verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar jacoco:report -Dsonar.projectKey=SafaaLanaTest_Project-Soft
