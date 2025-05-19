@@ -1,4 +1,4 @@
-name: SonarQube Analysis
+name: SonarCloud Analysis
 
 on:
   push:
@@ -40,8 +40,13 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          # Step 1: Build the project and run tests
           mvn -B clean package
+          
+          # Step 2: Prepare Jacoco agent and generate coverage report
           mvn -B org.jacoco:jacoco-maven-plugin:prepare-agent test
+          
+          # Step 3: Run SonarCloud analysis with all required parameters
           mvn -B sonar:sonar \
             -Dsonar.projectKey=SafaaLanaTest_sw_project \
             -Dsonar.organization=safaalanatest \
@@ -50,7 +55,7 @@ jobs:
             -Dsonar.projectName="sw_project" \
             -Dsonar.branch.name=${{ github.ref_name }} \
             -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml \
-            -Dsonar.projectCreate=true \
-            -Dsonar.defaultBranch=main \
             -Dsonar.java.binaries=target/classes \
-            -Dsonar.sourceEncoding=UTF-8
+            -Dsonar.sourceEncoding=UTF-8 \
+            -Dsonar.projectVersion=1.0 \
+            -Dsonar.working.directory=.sonar
