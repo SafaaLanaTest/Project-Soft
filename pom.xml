@@ -23,6 +23,8 @@
         <sonar.java.binaries>target/classes</sonar.java.binaries>
         <sonar.coverage.jacoco.xmlReportPaths>target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
         <sonar.language>java</sonar.language>
+        <sonar.scm.provider>git</sonar.scm.provider>
+        <sonar.working.directory>.sonar</sonar.working.directory>
     </properties>
 
     <dependencies>
@@ -121,7 +123,28 @@
                 <groupId>org.sonarsource.scanner.maven</groupId>
                 <artifactId>sonar-maven-plugin</artifactId>
                 <version>3.9.1.2184</version>
+                <executions>
+                    <execution>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sonar</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>sonar</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <sonar.projectCreate>true</sonar.projectCreate>
+                <sonar.defaultBranch>main</sonar.defaultBranch>
+            </properties>
+        </profile>
+    </profiles>
 </project>
