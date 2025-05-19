@@ -1,15 +1,18 @@
-name: SonarCloud Analysis
+
+name: SonarQube
 
 on:
   push:
-    branches: [ main, master ]
+    branches:
+      - master
   pull_request:
     types: [opened, synchronize, reopened]
-
+    
 jobs:
-  sonarcloud-analysis:
-    name: SonarCloud Analysis
+  build:
+    name: Build and analyze
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
         with:
@@ -32,30 +35,10 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.m2
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          key: ${{ runner.os }}-m2-${{ hashFiles('pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
 
       - name: Build and analyze
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          # Step 1: Build the project and run tests
-          mvn -B clean package
-          
-          # Step 2: Prepare Jacoco agent and generate coverage report
-          mvn -B org.jacoco:jacoco-maven-plugin:prepare-agent test
-          
-          # Step 3: Run SonarCloud analysis with all required parameters
-          mvn -B sonar:sonar \
-            -Dsonar.projectKey=SafaaLanaTest_sw_project \
-            -Dsonar.organization=safaalanatest \
-            -Dsonar.host.url=https://sonarcloud.io \
-            -Dsonar.login=${{ secrets.SONAR_TOKEN }} \
-            -Dsonar.projectName="sw_project" \
-            -Dsonar.branch.name=${{ github.ref_name }} \
-            -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml \
-            -Dsonar.java.binaries=target/classes \
-            -Dsonar.sourceEncoding=UTF-8 \
-            -Dsonar.projectVersion=1.0 \
-            -Dsonar.working.directory=.sonar
+        run: mvn -B clean verify sonar:sonar -Dsonar.projectKey=SafaaLanaTest_sw_project -Dsonar.organization=SafaaLanaTest -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=${{ secrets.SONAR_TOKEN }}
