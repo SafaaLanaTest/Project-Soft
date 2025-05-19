@@ -12,19 +12,9 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        
-        <!-- SonarCloud Properties -->
         <sonar.projectKey>SafaaLanaTest_sw_project</sonar.projectKey>
         <sonar.organization>safaalanatest</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
-        <sonar.projectName>sw_project</sonar.projectName>
-        <sonar.sourceEncoding>UTF-8</sonar.sourceEncoding>
-        <sonar.java.source>17</sonar.java.source>
-        <sonar.java.binaries>target/classes</sonar.java.binaries>
-        <sonar.coverage.jacoco.xmlReportPaths>target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
-        <sonar.language>java</sonar.language>
-        <sonar.scm.provider>git</sonar.scm.provider>
-        <sonar.working.directory>.sonar</sonar.working.directory>
     </properties>
 
     <dependencies>
@@ -70,7 +60,6 @@
 
     <build>
         <plugins>
-            <!-- Compiler Plugin -->
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.10.1</version>
@@ -80,13 +69,11 @@
                 </configuration>
             </plugin>
 
-            <!-- Surefire Plugin for Tests -->
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.0.0</version>
             </plugin>
 
-            <!-- JavaFX Plugin -->
             <plugin>
                 <groupId>org.openjfx</groupId>
                 <artifactId>javafx-maven-plugin</artifactId>
@@ -96,7 +83,6 @@
                 </configuration>
             </plugin>
 
-            <!-- Jacoco for Code Coverage -->
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
@@ -117,34 +103,6 @@
                     </execution>
                 </executions>
             </plugin>
-
-            <!-- SonarQube Scanner -->
-            <plugin>
-                <groupId>org.sonarsource.scanner.maven</groupId>
-                <artifactId>sonar-maven-plugin</artifactId>
-                <version>3.9.1.2184</version>
-                <executions>
-                    <execution>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>sonar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
         </plugins>
     </build>
-
-    <profiles>
-        <profile>
-            <id>sonar</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <properties>
-                <sonar.projectCreate>true</sonar.projectCreate>
-                <sonar.defaultBranch>main</sonar.defaultBranch>
-            </properties>
-        </profile>
-    </profiles>
 </project>
