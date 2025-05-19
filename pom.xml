@@ -12,9 +12,9 @@
         <maven.compiler.source>24</maven.compiler.source>
         <maven.compiler.target>24</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
+        
         <!-- SonarCloud properties -->
-        <sonar.organization>SafaaLanaTest</sonar.organization>
+        <sonar.organization>safaalanatest</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     </properties>
 
@@ -132,5 +132,4 @@
             </plugin>
         </plugins>
     </reporting>
-
 </project>
