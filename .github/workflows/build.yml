@@ -1,21 +1,19 @@
-name: SonarQube
+name: SonarQube Analysis
 
 on:
   push:
-    branches:
-      - master
+    branches: [ main, master ]
   pull_request:
     types: [opened, synchronize, reopened]
-    
-jobs:
-  build:
-    name: Build and analyze
-    runs-on: ubuntu-latest
 
+jobs:
+  sonarcloud-analysis:
+    name: SonarCloud Analysis
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # مهم لتحليل السونار بشكل صحيح
+          fetch-depth: 0
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4
@@ -34,20 +32,25 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.m2
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}  # التعديل هنا ليشمل جميع ملفات pom
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
 
       - name: Build and analyze
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # أضيف هذا للسجلات والربط مع GitHub
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          mvn -B jacoco:prepare-agent clean verify 
+          mvn -B clean package
+          mvn -B org.jacoco:jacoco-maven-plugin:prepare-agent test
           mvn -B sonar:sonar \
             -Dsonar.projectKey=SafaaLanaTest_sw_project \
-            -Dsonar.organization=SafaaLanaTest \
+            -Dsonar.organization=safaalanatest \
             -Dsonar.host.url=https://sonarcloud.io \
             -Dsonar.login=${{ secrets.SONAR_TOKEN }} \
             -Dsonar.projectName="sw_project" \
             -Dsonar.branch.name=${{ github.ref_name }} \
-            -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
+            -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml \
+            -Dsonar.projectCreate=true \
+            -Dsonar.defaultBranch=main \
+            -Dsonar.java.binaries=target/classes \
+            -Dsonar.sourceEncoding=UTF-8
