@@ -40,4 +40,4 @@ jobs:
       - name: Build and analyze
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: mvn -B clean jacoco:prepare-agent verify sonar:sonar -Dsonar.projectKey=SafaaLanaTest_sw_project -Dsonar.coverage.exlusions-**/acceptanceTest.java -Dsonar.organization=SafaaLanaTest -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+        run: mvn -B clean jacoco:prepare-agent verify sonar:sonar -Dsonar.projectKey=SafaaLanaTest_sw_project  -Dsonar.organization=SafaaLanaTest -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=${{ secrets.SONAR_TOKEN }}
