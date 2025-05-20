@@ -41,21 +41,36 @@ public class TaskManager {
     }
 
     public void assignTask(String taskName) {
+        Chef bestChef = findBestChef(taskName);
+
+        if (bestChef != null) {
+            assignToChef(bestChef, taskName);
+        }
+    }
+
+    private Chef findBestChef(String taskName) {
         Chef bestChef = null;
 
         for (Chef chef : chefs) {
-            if (taskName.toLowerCase().contains("lasagna")
-                    && chef.getExpertise().equalsIgnoreCase("Italian Cuisine")
-                    && (bestChef == null || chef.getCurrentTasks() < bestChef.getCurrentTasks())) {
-                bestChef = chef;
+            if (isMatchingExpertise(taskName, chef)) {
+                if (bestChef == null || chef.getCurrentTasks() < bestChef.getCurrentTasks()) {
+                    bestChef = chef;
+                }
             }
         }
 
-        if (bestChef != null) {
-            bestChef.incrementTasks();
-            assignedChefName = bestChef.getName();
-            notifications.put(assignedChefName, "You have been assigned: " + taskName);
-        }
+        return bestChef;
+    }
+
+    private boolean isMatchingExpertise(String taskName, Chef chef) {
+        return taskName.toLowerCase().contains("lasagna")
+                && chef.getExpertise().equalsIgnoreCase("Italian Cuisine");
+    }
+
+    private void assignToChef(Chef chef, String taskName) {
+        chef.incrementTasks();
+        assignedChefName = chef.getName();
+        notifications.put(assignedChefName, "You have been assigned: " + taskName);
     }
 
     public String getAssignedChefName() {
