@@ -1,19 +1,22 @@
 package com.example.sw_project;
+
 import java.util.HashMap;
 import java.util.Map;
 
 public class IngredientSubstitutionService {
-
     private String selectedUnavailableIngredient;
     private String selectedAllergicIngredient;
     private String suggestedAlternative;
     private boolean substitutionEnforced = false;
     private String substitutionAlert;
+    private final Map<String, String> substitutionMap;
 
-    private final Map<String, String> substitutionMap = new HashMap<>() {{
-        put("Truffle Oil", "Olive Oil");
-        put("Peanut Sauce", "Tahini Sauce");
-    }};
+    // Constructor to initialize the substitution map
+    public IngredientSubstitutionService() {
+        substitutionMap = new HashMap<>();
+        substitutionMap.put("Truffle Oil", "Olive Oil");
+        substitutionMap.put("Peanut Sauce", "Tahini Sauce");
+    }
 
     public void setUnavailableIngredient(String ingredient) {
         this.selectedUnavailableIngredient = ingredient;
@@ -28,27 +31,27 @@ public class IngredientSubstitutionService {
     }
 
     public void processSubstitutionLogic() {
-        if (selectedAllergicIngredient != null && substitutionMap.containsKey(selectedAllergicIngredient)) {
-            suggestedAlternative = substitutionMap.get(selectedAllergicIngredient);
-            substitutionEnforced = true;
-        } else if (selectedUnavailableIngredient != null && substitutionMap.containsKey(selectedUnavailableIngredient)) {
-            suggestedAlternative = substitutionMap.get(selectedUnavailableIngredient);
+        if (this.selectedAllergicIngredient != null && this.substitutionMap.containsKey(this.selectedAllergicIngredient)) {
+            this.suggestedAlternative = this.substitutionMap.get(this.selectedAllergicIngredient);
+            this.substitutionEnforced = true;
+        } else if (this.selectedUnavailableIngredient != null && this.substitutionMap.containsKey(this.selectedUnavailableIngredient)) {
+            this.suggestedAlternative = this.substitutionMap.get(this.selectedUnavailableIngredient);
         }
     }
 
     public String getSuggestedAlternative() {
-        return suggestedAlternative;
+        return this.suggestedAlternative;
     }
 
     public boolean isSubstitutionEnforced() {
-        return substitutionEnforced;
+        return this.substitutionEnforced;
     }
 
     public void applySubstitution(String original, String substitute) {
-        substitutionAlert = "Substitution applied: " + original + " -> " + substitute;
+        this.substitutionAlert = "Substitution applied: " + original + " -> " + substitute;
     }
 
     public String getSubstitutionAlert() {
-        return substitutionAlert;
+        return this.substitutionAlert;
     }
 }
