@@ -1,8 +1,3 @@
-//
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by FernFlower decompiler)
-//
-
 package com.example.sw_project;
 
 import java.util.HashMap;
@@ -14,12 +9,14 @@ public class IngredientSubstitutionService {
     private String suggestedAlternative;
     private boolean substitutionEnforced = false;
     private String substitutionAlert;
-    private final Map<String, String> substitutionMap = new HashMap<String, String>() {
-        {
-            this.put("Truffle Oil", "Olive Oil");
-            this.put("Peanut Sauce", "Tahini Sauce");
-        }
-    };
+    private final Map<String, String> substitutionMap;
+
+    // Constructor to initialize the substitution map
+    public IngredientSubstitutionService() {
+        substitutionMap = new HashMap<>();
+        substitutionMap.put("Truffle Oil", "Olive Oil");
+        substitutionMap.put("Peanut Sauce", "Tahini Sauce");
+    }
 
     public void setUnavailableIngredient(String ingredient) {
         this.selectedUnavailableIngredient = ingredient;
@@ -31,17 +28,15 @@ public class IngredientSubstitutionService {
         } else {
             this.selectedAllergicIngredient = allergen;
         }
-
     }
 
     public void processSubstitutionLogic() {
         if (this.selectedAllergicIngredient != null && this.substitutionMap.containsKey(this.selectedAllergicIngredient)) {
-            this.suggestedAlternative = (String)this.substitutionMap.get(this.selectedAllergicIngredient);
+            this.suggestedAlternative = this.substitutionMap.get(this.selectedAllergicIngredient);
             this.substitutionEnforced = true;
         } else if (this.selectedUnavailableIngredient != null && this.substitutionMap.containsKey(this.selectedUnavailableIngredient)) {
-            this.suggestedAlternative = (String)this.substitutionMap.get(this.selectedUnavailableIngredient);
+            this.suggestedAlternative = this.substitutionMap.get(this.selectedUnavailableIngredient);
         }
-
     }
 
     public String getSuggestedAlternative() {
