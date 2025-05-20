@@ -44,10 +44,10 @@ public class TaskManager {
         Chef bestChef = null;
 
         for (Chef chef : chefs) {
-            if (taskName.toLowerCase().contains("lasagna")
-                    && chef.getExpertise().equalsIgnoreCase("Italian Cuisine")
-                    && (bestChef == null || chef.getCurrentTasks() < bestChef.getCurrentTasks())) {
-                bestChef = chef;
+            if (taskName.toLowerCase().contains("lasagna") && chef.getExpertise().equalsIgnoreCase("Italian Cuisine")) {
+                if (bestChef == null || chef.getCurrentTasks() < bestChef.getCurrentTasks()) {
+                    bestChef = chef;
+                }
             }
         }
 
