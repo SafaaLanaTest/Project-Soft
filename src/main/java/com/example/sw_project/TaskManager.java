@@ -52,10 +52,9 @@ public class TaskManager {
         Chef bestChef = null;
 
         for (Chef chef : chefs) {
-            if (isMatchingExpertise(taskName, chef)) {
-                if (bestChef == null || chef.getCurrentTasks() < bestChef.getCurrentTasks()) {
-                    bestChef = chef;
-                }
+            if (isMatchingExpertise(taskName, chef) &&
+                    (bestChef == null || chef.getCurrentTasks() < bestChef.getCurrentTasks())) {
+                bestChef = chef;
             }
         }
 
