@@ -6,8 +6,8 @@ import io.cucumber.junit.CucumberOptions;
 
 @RunWith(Cucumber.class)
 @CucumberOptions(
-        features = "src/main/resources/cases",        // استخدم مسار نسبي فقط
-        glue = "com.example.sw_project.AcceptanceTest.ProductionCode" // ضع الباكيج الصحيح لخطوات Given/When/Then
+        features = "src/main/resources/cases",
+        glue = "com.example.sw_project.AcceptanceTest.ProductionCode"
 )
 public class acceptanceTest {
 }
